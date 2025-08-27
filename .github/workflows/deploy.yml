@@ -1,0 +1,63 @@
+name: Deploy to GCP VM
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Mark directory as safe for Git
+        run: git config --global --add safe.directory /var/www/git-act
+
+      - name: Notify Slack – Start
+        run: |
+          payload="{
+            \"text\": \"🟡 *Starting Deployment...*\\n\
+          *Repo:* $GITHUB_REPOSITORY\\n\
+          *Branch:* ${GITHUB_REF#refs/heads/}\"
+          }"
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$payload" \
+            "${{ secrets.SLACK_WEBHOOK_URL }}"
+
+      - name: Deploy code to VM
+        run: |
+          echo "📁 Ensuring app directory exists"
+          sudo mkdir -p /var/www
+
+          echo "📁 Changing to app directory"
+          cd /var/www/git-act || exit 1
+
+          echo "📥 Pulling latest code"
+          git pull origin main
+
+          echo "📦 Installing dependencies"
+          npm install
+
+      - name: 🚀 Start or Restart PM2 App
+        run: |
+          echo "🚀 Starting or restarting app"
+          sudo pm2 delete titles-server || true
+          sudo pm2 start app.js --name "titles-server" --update-env
+          sudo pm2 save
+           
+      - name: Notify Slack – Complete
+        if: always()
+        run: |
+          payload="{
+            \"text\": \"✅ *Deployment Finished*\\n\
+          Repo: $GITHUB_REPOSITORY\\n\
+          Branch: ${GITHUB_REF#refs/heads/}\\n\
+          Status: ${{ job.status }}\"
+          }"
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$payload" \
+            "${{ secrets.SLACK_WEBHOOK_URL }}"
+
+      
