@@ -21,7 +21,7 @@ jobs:
       - name: Deploy code to VM
         run: |
           echo "📁 Ensuring app directory exists"
-          sudo mkdir -p /var/www/assets
+          mkdir -p /var/www/assets
 
           echo "📁 Changing to app directory"
           cd /var/www/assets || exit 1
