@@ -6,10 +6,10 @@ on:
 
 jobs:
   deploy:
+    runs-on: [self-hosted]
     strategy:
       matrix:
-        server: [server1, server2]  # Labels of your self-hosted runners
-    runs-on: [self-hosted, ${{ matrix.server }}]
+        server: [server1, server2] # Names of your runners
 
     steps:
       - name: Checkout code
@@ -18,10 +18,10 @@ jobs:
       - name: Mark directory as safe for Git
         run: git config --global --add safe.directory /var/www/assets
 
-      - name: Deploy code
+      - name: Deploy code to VM
         run: |
           echo "📁 Ensuring app directory exists"
-          mkdir -p /var/www/assets
+          sudo mkdir -p /var/www
 
           echo "📁 Changing to app directory"
           cd /var/www/assets || exit 1
@@ -32,6 +32,9 @@ jobs:
           echo "📦 Installing dependencies"
           npm install
 
+      - name: 🚀 Start or Restart PM2 App
+        run: |
           echo "🚀 Starting or restarting app"
-          pm2 restart titles-server || pm2 start app.js --name "titles-server" --update-env
-          pm2 save
+          sudo pm2 delete titles-server || true
+          sudo pm2 start app.js --name "titles-server" --update-env
+          sudo pm2 save
