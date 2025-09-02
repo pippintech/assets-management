@@ -29,7 +29,7 @@ jobs:
              git pull origin main
           else
              echo "📥 Cloning repository for the first time"
-             sudo git clone https://github.com/pippintech/assets-management.git
+             git clone https://github.com/pippintech/assets-management.git
           fi
        
           echo "📦 Installing dependencies"
