@@ -22,13 +22,16 @@ jobs:
         run: |
           echo "📁 Ensuring app directory exists"
           mkdir -p /var/www/assets
-
-          echo "📁 Changing to app directory"
           cd /var/www/assets || exit 1
 
-          echo "📥 Pulling latest code"
-          git pull origin main
-
+          if [ -d ".git" ]; then
+             echo "📥 Pulling latest code"
+             git pull origin main
+          else
+             echo "📥 Cloning repository for the first time"
+             git clone https://github.com/pippintech/assets-management.git
+          fi
+       
           echo "📦 Installing dependencies"
           npm install
 
