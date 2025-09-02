@@ -5,7 +5,7 @@ const path = require('path');
 const PORT = 3000;
 
 const server = http.createServer((req, res) => {
-  let filePath = path.join(__dirname, req.url === '/' ? 'index.html' : req.url);
+  let filePath = path.join(__dirname, req.url === '/' ? 'Index.html' : req.url);
   const ext = path.extname(filePath).toLowerCase();
   let contentType = 'text/html';
 
@@ -29,5 +29,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`🚀 Server running at http://34.172.115.17:${PORT}`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
