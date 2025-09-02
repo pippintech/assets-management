@@ -1,4 +1,4 @@
-name: Deploy to GCP VM
+name: Deploy to GCP VMs
 
 on:
   push:
@@ -6,7 +6,10 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: [self-hosted]
+    strategy:
+      matrix:
+        server: [self-hosted, self-hosted2] # Names of your runners
 
     steps:
       - name: Checkout code
@@ -35,5 +38,3 @@ jobs:
           sudo pm2 delete titles-server || true
           sudo pm2 start app.js --name "titles-server" --update-env
           sudo pm2 save
-          
-     
