@@ -1,4 +1,4 @@
-name: Deploy to GCP VMs
+name: Deploy to GCP VM
 
 on:
   push:
@@ -6,32 +6,36 @@ on:
 
 jobs:
   deploy:
-    runs-on: [self-hosted]
-    strategy:
-      matrix:
-        server: [server1, server2] # Names of your runners
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Mark directory as safe for Git
-        run: git config --global --add safe.directory /var/www/assets
+        run: git config --global --add safe.directory /var/www/your-app/nodejsprojectingithub
+
+      - name: Notify Slack – Start
+        run: |
+          payload="{
+            \"text\": \"🟡 *Starting Deployment...*\\n\
+          *Repo:* $GITHUB_REPOSITORY\\n\
+          *Branch:* ${GITHUB_REF#refs/heads/}\"}"
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$payload" \
+            "${{ secrets.SLACK_WEBHOOK_URL }}"
 
       - name: Deploy code to VM
         run: |
           echo "📁 Ensuring app directory exists"
-          mkdir -p /var/www/assets
-          cd /var/www/assets || exit 1
+          sudo mkdir -p /var/www/your-app
 
-          if [ -d ".git" ]; then
-             echo "📥 Pulling latest code"
-             git pull origin main
-          else
-             echo "📥 Cloning repository for the first time"
-             git clone https://github.com/pippintech/assets-management.git
-          fi
-       
+          echo "📁 Changing to app directory"
+          cd /var/www/your-app/nodejsprojectingithub || exit 1
+
+          echo "📥 Pulling latest code"
+          git pull origin main
+
           echo "📦 Installing dependencies"
           npm install
 
@@ -41,3 +45,15 @@ jobs:
           sudo pm2 delete titles-server || true
           sudo pm2 start app.js --name "titles-server" --update-env
           sudo pm2 save
+
+      - name: Notify Slack – Complete
+        if: always()
+        run: |
+          payload="{
+            \"text\": \"✅ *Deployment Finished*\\n\
+          Repo: $GITHUB_REPOSITORY\\n\
+          Branch: ${GITHUB_REF#refs/heads/}\\n\
+          Status: ${{ job.status }}\"}"
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$payload" \
+            "${{ secrets.SLACK_WEBHOOK_URL }}"
