@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: self-hosted, self-hosted2
 
     steps:
       - name: Checkout code
@@ -18,7 +18,7 @@ jobs:
       - name: Deploy code to VM
         run: |
           echo "📁 Ensuring app directory exists"
-          mkdir -p /var/www/assets
+          mkdir -p /var/www
 
           echo "📁 Changing to app directory"
           cd /var/www/assets || exit 1
