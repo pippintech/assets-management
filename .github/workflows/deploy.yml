@@ -18,7 +18,7 @@ jobs:
       - name: Deploy code to VM
         run: |
           echo "📁 Ensuring app directory exists"
-          sudo mkdir -p /var/www/your-app
+          mkdir -p /var/www/your-app
 
           echo "📁 Changing to app directory"
           cd /var/www/your-app/nodejsprojectingithub || exit 1
