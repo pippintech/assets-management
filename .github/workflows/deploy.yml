@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy-server1:
-    runs-on: [self-hosted1]  # uses runner labeled 'self-hosted1'
+    runs-on: [self-hosted]  # uses runner labeled 'self-hosted1'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
