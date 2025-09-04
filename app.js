@@ -29,5 +29,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`🚀 Server running at http://34.45.206.133:${3000}`);
+  console.log(`🚀 Server running at http://35.192.181.172:${3000}`);
 });
