@@ -24,7 +24,7 @@ jobs:
             git pull origin main
           else
             echo "📥 Cloning repository for the first time"
-            git clone https://x-access-token:${{ secrets.GH_PAT }}git@github.com:pippintech/assets-management.git .
+            git clone https://x-access-token:${{ secrets.GH_PAT }}@github.com:pippintech/assets-management.git .
           fi
 
       - name: 📦 Install dependencies
