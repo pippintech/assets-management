@@ -34,10 +34,12 @@ jobs:
 
       - name: 🚀 Start or Restart PM2 App
         run: |
-          echo "🚀 Starting or restarting app"
-          sudo pm2 delete titles-server || true
-          sudo pm2 start app.js --name "titles-server" --update-env
-          sudo pm2 save
+         cd /var/www/assets-management
+         export PATH=$PATH:$(npm bin -g)
+         echo "🚀 Starting or restarting app"
+         sudo pm2 delete titles-server || true
+         sudo pm2 start app.js --name "titles-server" --update-env
+         sudo pm2 save
            
       
       
