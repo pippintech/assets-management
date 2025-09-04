@@ -18,7 +18,7 @@ jobs:
       - name: Deploy code to VM
         run: |
           echo "📁 Ensuring app directory exists"
-          cd /var/www/
+          cd /var/www/assets-management
 
           if [ -d ".git" ]; then
           echo "📥 Pulling latest code"
