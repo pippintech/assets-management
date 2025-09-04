@@ -27,7 +27,7 @@ jobs:
           sudo pm2 save
 
   deploy-server2:
-    runs-on: [self-hosted2]  # uses runner labeled 'self-hosted2'
+    runs-on: [self-hosted]  # uses runner labeled 'self-hosted2'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
