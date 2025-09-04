@@ -33,27 +33,13 @@ jobs:
           npm install
 
       - name: 🚀 Start or Restart PM2 App
-  run: |
-    cd /var/www/assets-management
-
-    # Ensure npm global binaries are in PATH
-    export PATH=$PATH:$(npm bin -g)
-
-    # Install PM2 if not installed
-    if ! command -v pm2 >/dev/null 2>&1; then
-      echo "PM2 not found. Installing globally..."
-      sudo npm install -g pm2
-    fi
-
-    echo "🚀 Starting or restarting app"
-
-    # Delete process only if it exists
-    if pm2 list | grep -q titles-server; then
-      sudo pm2 delete titles-server
-    fi
-
-    # Start the app
-    sudo pm2 start app.js --name "titles-server" --update-env
-    sudo pm2 save
-
+        run: |
+         cd /var/www/assets-management
+         export PATH=$PATH:$(npm bin -g)
+         echo "🚀 Starting or restarting app"
+         sudo pm2 delete titles-server || true
+         sudo pm2 start app.js --name "titles-server" --update-env
+         sudo pm2 save
+           
+      
       
