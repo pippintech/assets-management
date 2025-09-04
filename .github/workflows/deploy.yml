@@ -18,13 +18,16 @@ jobs:
       - name: Deploy code to VM
         run: |
           echo "📁 Ensuring app directory exists"
-          sudo mkdir -p /var/www
+          cd /var/www/assets-management
 
-          echo "📁 Changing to app directory"
-          cd /var/www/assets-management || exit 1
-
+          if [ -d ".git" ]; then
           echo "📥 Pulling latest code"
+          git reset --hard
           git pull origin main
+          else
+          echo "📥 Cloning repository for the first time"
+          git clone https://github.com/pippintech/assets-management.git
+          fi
 
           echo "📦 Installing dependencies"
           npm install
