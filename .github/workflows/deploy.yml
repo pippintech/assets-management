@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Mark directory as safe for Git
-        run: git config --global --add safe.directory /var/www/assets
+        run: git config --global --add safe.directory /var/www/assets-management
 
       - name: Deploy code to VM
         run: |
@@ -21,7 +21,7 @@ jobs:
           mkdir -p /var/www
 
           echo "📁 Changing to app directory"
-          cd /var/www/assets || exit 1
+          cd /var/www/assets-management || exit 1
 
           echo "📥 Pulling latest code"
           git pull origin main
