@@ -12,28 +12,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Mark directory as safe for Git
-        run: git config --global --add safe.directory /var/www/assets-management
-
-      - name: Deploy code to VM
+      - name: Ensure app directory and update repo
         run: |
           echo "📁 Ensuring app directory exists"
-          sudo mkdir -p /var/www
+          sudo mkdir -p /var/www/assets-management
+          cd /var/www/assets-management
 
-          echo "📁 Changing to app directory"
-          cd /var/www/assets-management || exit 1
+          if [ -d ".git" ]; then
+            echo "📥 Pulling latest code"
+            git reset --hard
+            git pull origin main
+          else
+            echo "📥 Cloning repository for the first time"
+            git clone https://github.com/USERNAME/REPO.git .
+          fi
 
-          echo "📥 Pulling latest code"
-          git pull origin main
-
-          echo "📦 Installing dependencies"
+      - name: 📦 Install dependencies
+        run: |
+          cd /var/www/assets-management
           npm install
 
       - name: 🚀 Start or Restart PM2 App
         run: |
+          cd /var/www/assets-management
           echo "🚀 Starting or restarting app"
           sudo pm2 delete titles-server || true
           sudo pm2 start app.js --name "titles-server" --update-env
           sudo pm2 save
-
-     
