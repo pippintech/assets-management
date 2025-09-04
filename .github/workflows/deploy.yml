@@ -1,45 +1,48 @@
-name: Deploy to GCP VM
+name: Deploy to multiple servers
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  deploy:
-    runs-on: self-hosted
-
+  deploy-server1:
+    runs-on: [self-hosted, self-hosted1]  # uses runner labeled 'self-hosted1'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Mark directory as safe for Git
-        run: git config --global --add safe.directory /var/www/assets-management
-
-      - name: Deploy code to VM
+      - name: Deploy code
         run: |
-          echo "📁 Ensuring app directory exists"
           cd /var/www/assets-management
-
           if [ -d ".git" ]; then
-          echo "📥 Pulling latest code"
-          git reset --hard
-          git pull origin main
+            git reset --hard
+            git pull origin main
           else
-          echo "📥 Cloning repository for the first time"
-          git clone https://github.com/pippintech/assets-management.git
+            git clone https://github.com/pippintech/assets-management.git .
           fi
-
-          echo "📦 Installing dependencies"
           npm install
+          export PATH=$PATH:$(npm bin -g)
+          sudo pm2 delete titles-server || true
+          sudo pm2 start app.js --name "titles-server" --update-env
+          sudo pm2 save
 
-      - name: 🚀 Start or Restart PM2 App
+  deploy-server2:
+    runs-on: [self-hosted, self-hosted2]  # uses runner labeled 'self-hosted2'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy code
         run: |
-         cd /var/www/assets-management
-         export PATH=$PATH:$(npm bin -g)
-         echo "🚀 Starting or restarting app"
-         sudo pm2 delete titles-server || true
-         sudo pm2 start app.js --name "titles-server" --update-env
-         sudo pm2 save
-           
-      
-      
+          cd /var/www/assets-management
+          if [ -d ".git" ]; then
+            git reset --hard
+            git pull origin main
+          else
+            git clone https://github.com/pippintech/assets-management.git .
+          fi
+          npm install
+          export PATH=$PATH:$(npm bin -g)
+          sudo pm2 delete titles-server || true
+          sudo pm2 start app.js --name "titles-server" --update-env
+          sudo pm2 save
