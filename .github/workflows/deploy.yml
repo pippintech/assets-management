@@ -11,6 +11,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Notify Slack – Start
+        run: |
+          payload="{
+            \"text\": \"🟡 *Starting Deployment...*\\n\
+          *Repo:* $GITHUB_REPOSITORY\\n\
+          *Branch:* ${GITHUB_REF#refs/heads/}\"
+          }"
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$payload" \
+            "${{ secrets.SLACK_WEBHOOK_URL }}"
+  
+
       - name: Deploy code
         run: |
           cd /var/www/assets-management
@@ -25,6 +37,20 @@ jobs:
           sudo pm2 delete titles-server || true
           sudo pm2 start app.js --name "titles-server" --update-env
           sudo pm2 save
+
+      - name: Notify Slack – Complete
+        if: always()
+        run: |
+          payload="{
+            \"text\": \"✅ *Deployment Finished*\\n\
+          Repo: $GITHUB_REPOSITORY\\n\
+          Branch: ${GITHUB_REF#refs/heads/}\\n\
+          Status: ${{ job.status }}\"
+          }"
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$payload" \
+            "${{ secrets.SLACK_WEBHOOK_URL }}"
+    
 
   deploy-server2:
     runs-on: [self-hosted]  # uses runner labeled 'self-hosted2'
@@ -32,6 +58,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Notify Slack – Start
+        run: |
+          payload="{
+            \"text\": \"🟡 *Starting Deployment...*\\n\
+          *Repo:* $GITHUB_REPOSITORY\\n\
+          *Branch:* ${GITHUB_REF#refs/heads/}\"
+          }"
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$payload" \
+            "${{ secrets.SLACK_WEBHOOK_URL }}"
+  
+
       - name: Deploy code
         run: |
           cd /var/www/assets-management
@@ -46,3 +84,15 @@ jobs:
           sudo pm2 delete titles-server || true
           sudo pm2 start app.js --name "titles-server" --update-env
           sudo pm2 save
+      - name: Notify Slack – Complete
+        if: always()
+        run: |
+          payload="{
+            \"text\": \"✅ *Deployment Finished*\\n\
+          Repo: $GITHUB_REPOSITORY\\n\
+          Branch: ${GITHUB_REF#refs/heads/}\\n\
+          Status: ${{ job.status }}\"
+          }"
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$payload" \
+            "${{ secrets.SLACK_WEBHOOK_URL }}"
