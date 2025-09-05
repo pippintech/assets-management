@@ -14,7 +14,7 @@ jobs:
       - name: Notify Slack – Start
         run: |
           payload="{
-            \"text\": \"🟡 *Starting Deployment...*\\n\
+            \"text\": \"🟡 *z-assets-server-1-Starting Deployment...*\\n\
           *Repo:* $GITHUB_REPOSITORY\\n\
           *Branch:* ${GITHUB_REF#refs/heads/}\"
           }"
@@ -42,7 +42,7 @@ jobs:
         if: always()
         run: |
           payload="{
-            \"text\": \"✅ *Deployment Finished*\\n\
+            \"text\": \"✅ *z-assets-server-1-Deployment Finished*\\n\
           Repo: $GITHUB_REPOSITORY\\n\
           Branch: ${GITHUB_REF#refs/heads/}\\n\
           Status: ${{ job.status }}\"
@@ -61,7 +61,7 @@ jobs:
       - name: Notify Slack – Start
         run: |
           payload="{
-            \"text\": \"🟡 *Starting Deployment...*\\n\
+            \"text\": \"🟡 *z-assets-server-2-Starting Deployment...*\\n\
           *Repo:* $GITHUB_REPOSITORY\\n\
           *Branch:* ${GITHUB_REF#refs/heads/}\"
           }"
@@ -88,7 +88,7 @@ jobs:
         if: always()
         run: |
           payload="{
-            \"text\": \"✅ *Deployment Finished*\\n\
+            \"text\": \"✅ *z-assets-server-2-Deployment Finished*\\n\
           Repo: $GITHUB_REPOSITORY\\n\
           Branch: ${GITHUB_REF#refs/heads/}\\n\
           Status: ${{ job.status }}\"
