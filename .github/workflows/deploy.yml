@@ -49,7 +49,7 @@ jobs:
           }"
           curl -X POST -H 'Content-type: application/json' \
             --data "$payload" \
-            "${{ secrets.SLACK_WEBHOOK_URL }}"
+            "${{ secrets.SLACK }}"
     
 
   deploy-server2:
@@ -67,7 +67,7 @@ jobs:
           }"
           curl -X POST -H 'Content-type: application/json' \
             --data "$payload" \
-            "${{ secrets.SLACK_WEBHOOK_URL }}"
+            "${{ secrets.SLACK }}"
   
 
       - name: Deploy code
@@ -95,4 +95,4 @@ jobs:
           }"
           curl -X POST -H 'Content-type: application/json' \
             --data "$payload" \
-            "${{ secrets.SLACK_WEBHOOK_URL }}"
+            "${{ secrets.SLACK }}"
